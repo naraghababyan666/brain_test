@@ -12,6 +12,40 @@ use Illuminate\Testing\Fluent\Concerns\Has;
 
 class StudentController extends Controller
 {
+    /**
+     * @OA\Post(
+     * path="/api/register/student",
+     * description="Sign up as student",
+     * operationId="studentRegister",
+     * tags={"Sign up"},
+     * @OA\RequestBody(
+     *    description="Pass user credentials",
+     *    @OA\JsonContent(
+     *       required={"email","password", "first_name", "last_name", "phone"},
+     *       @OA\Property(property="email", type="string", format="email", example="student123@mail.ru"),
+     *       @OA\Property(property="password", type="string", format="password", example="student"),
+     *       @OA\Property(property="first_name", type="string", format="text", example="First name"),
+     *       @OA\Property(property="last_name", type="string", format="text", example="Last name"),
+     *       @OA\Property(property="phone", type="number", example="+374 98-066-083"),
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=422,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *        )
+     *     )
+     * )
+     * @OA\Response(
+     *    response=400,
+     *    description="Wrong credentials response",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Sorry, The email has already been taken.")
+     *        )
+     *     )
+     * )
+     */
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100|unique:users',
@@ -26,7 +60,6 @@ class StudentController extends Controller
         $user = Users::create([
             'email' => $validator->validated()['email'],
             'password' => Hash::make($validator->validated()['password']),
-            'table' => 'student'
         ]);
 
         Student::create([

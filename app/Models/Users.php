@@ -16,13 +16,11 @@ class Users extends Authenticatable implements JWTSubject
 
     protected $fillable = [
         'email',
-        'table',
         'password'
     ];
 
     protected $hidden = [
         'password',
-        'table'
     ];
 
     public function userswithrole() {
